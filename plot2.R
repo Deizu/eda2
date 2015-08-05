@@ -2,6 +2,8 @@
 
 # Load required libraries
 
+library(dplyr)
+
 # Check for data and download it if needed
 
 if(!file.exists("./data")) {dir.create("./data")}
@@ -24,9 +26,19 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
+bc <- subset(NEI,fips == "24510")
+
 ###############################################################################
 # Have total emissions from PM2.5 decreased in the Baltimore City, Maryland
 # (fips == "24510") from 1999 to 2008? Use the base plotting system to make a
 # plot answering this question.
 ###############################################################################
 
+data <- tbl_df(bc)
+data <- group_by(data,year)
+dp <- summarize(data, sum(Emissions))
+names(dp) <- c("Year","Total")
+png(file="plot2.png", height=480, width=480)
+plot(dp$Year, dp$Total, typ="b", xlab="Year", ylab="Total Emissions (Tons)",
+     main="PM2.5 Emissions in Baltimore City, MD")
+dev.off()
