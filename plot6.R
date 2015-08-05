@@ -5,7 +5,8 @@
 # Check for data and download it if needed
 
 if(!file.exists("./data")) {dir.create("./data")}
-if(!file.exists("./data/household_power_consumption.txt")) {
+if(!file.exists("./data/summarySCC_PM25.rds")
+   | !file.exists("./data/Source_Classification_Code.rds")) {
   
   dataurl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
   
