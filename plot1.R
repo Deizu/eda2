@@ -2,6 +2,8 @@
 
 # Load required libraries
 
+library(dplyr)
+
 # Check for data and download it if needed
 
 if(!file.exists("./data")) {dir.create("./data")}
@@ -24,9 +26,21 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
+# NEI$Pollutant <- as.factor(NEI$Pollutant)
+# NEI$year <- as.factor(NEI$year)
+# NEI$type <- as.factor(NEI$type)
+
 ############################################################################### 
 # Have total emissions from PM2.5 decreased in the United States from 1999 to
 # 2008? Using the base plotting system, make a plot showing the total PM2.5
 # emission from all sources for each of the years 1999, 2002, 2005, and 2008.
 ###############################################################################
 
+data <- tbl_df(NEI)
+data <- group_by(data,year)
+dp <- summarize(data, sum(Emissions))
+names(dp) <- c("Year","Total")
+png(file="plot1.png", height=480, width=480)
+plot(dp$Year, dp$Total, typ="b", xlab="Year", ylab="Total Emissions (Tons)",
+     main="PM2.5 Emissions in the US")
+dev.off()
