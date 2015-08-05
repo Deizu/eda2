@@ -2,6 +2,9 @@
 
 # Load required libraries
 
+require(ggplot2)
+require(tidyr)
+
 # Check for data and download it if needed
 
 if(!file.exists("./data")) {dir.create("./data")}
@@ -32,3 +35,19 @@ SCC <- readRDS("./data/Source_Classification_Code.rds")
 # answer this question.
 ###############################################################################
 
+NEI$Pollutant <- as.factor(NEI$Pollutant)
+NEI$year <- as.factor(NEI$year)
+NEI$type <- as.factor(NEI$type)
+data <- tbl_df(NEI)
+data <- group_by(data,year,type)
+dp <- summarize(data, sum(Emissions))
+names(dp) <- c("Year","Type","Emissions")
+
+png(file="plot3.png", height=480, width=480)
+qplot(Year, Emissions, data=dp, color=Type) + 
+  facet_grid(.~Type) + 
+  facet_wrap( ~Type, ncol=2) +
+  geom_line(aes(group=1)) +
+  geom_point(aes(group=1),size=2,shape=21,fill="white") +
+  theme(legend.position="none")
+dev.off()
