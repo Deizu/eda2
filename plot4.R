@@ -29,3 +29,18 @@ SCC <- readRDS("./data/Source_Classification_Code.rds")
 # sources changed from 1999–2008?
 ###############################################################################
 
+coalindex <- grep("coal|Coal",SCC$Short.Name)
+coalrelated <- SCC[coalindex,]
+coalindex <- as.vector(unique(coalrelated$SCC))
+coalindex <- NEI$SCC %in% coalindex
+coaldata <- NEI[coalindex,]
+coalcomplete <- left_join(coaldata,coalrelated,by=c("SCC" = "SCC"))
+coalcomplete <- tbl_df(coalcomplete)
+coalcomplete <- group_by(coalcomplete,year)
+coalsum <- summarize(coalcomplete,emissions=sum(Emissions))
+names(coalsum) <- c("Year","Emissions")
+
+png(file="plot4.png", height=480, width=480)
+plot(coalsum$Year, coalsum$Emissions, xlab="Year", ylab="Total Emissions (Tons)",
+     main="PM2.5 Emissions from Coal Combustion Related Sources", typ="b")
+dev.off()
