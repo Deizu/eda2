@@ -2,8 +2,9 @@
 
 # Load required libraries
 
-require(ggplot2)
 require(tidyr)
+require(dplyr)
+require(ggplot2)
 
 # Check for data and download it if needed
 
@@ -27,18 +28,20 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
+bc <- subset(NEI,fips == "24510")
+
 ###############################################################################
-# Of the four types of sources indicated by the type (point, nonpoint, onroad,
-# nonroad) variable, which of these four sources have seen decreases in
-# emissions from 1999–2008 for Baltimore City? Which have seen increases in
-# emissions from 1999–2008? Use the ggplot2 plotting system to make a plot
-# answer this question.
+# Of the four types of sources indicated by the type (point, nonpoint, onroad, 
+# nonroad) variable, which of these four sources have seen decreases in 
+# emissions from 1999–2008 for Baltimore City (fips == "24510")? Which have seen
+# increases in emissions from 1999–2008? Use the ggplot2 plotting system to make
+# a plot answer this question.
 ###############################################################################
 
-NEI$Pollutant <- as.factor(NEI$Pollutant)
-NEI$year <- as.factor(NEI$year)
-NEI$type <- as.factor(NEI$type)
-data <- tbl_df(NEI)
+bc$Pollutant <- as.factor(bc$Pollutant)
+bc$year <- as.factor(bc$year)
+bc$type <- as.factor(bc$type)
+data <- tbl_df(bc)
 data <- group_by(data,year,type)
 dp <- summarize(data, sum(Emissions))
 names(dp) <- c("Year","Type","Emissions")
