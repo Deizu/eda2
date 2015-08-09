@@ -32,10 +32,19 @@ SCC <- readRDS("./data/Source_Classification_Code.rds")
 # emission from all sources for each of the years 1999, 2002, 2005, and 2008.
 ###############################################################################
 
+# Transform the dataframe into a tbl via dplyr package for further cleanup
 data <- tbl_df(NEI)
+
+# Group the data by year for easier summarization
 data <- group_by(data,year)
+
+# Summarize the data by calculating a sum for each year
 dp <- summarize(data, sum(Emissions))
+
+# Clean up the column names
 names(dp) <- c("Year","Total")
+
+# Plot it using the base package
 png(file="plot1.png", height=600, width=600)
 plot(dp$Year, dp$Total, typ="b", xlab="Year", ylab="Total Emissions (Tons)",
      main="PM2.5 Emissions in the US")
