@@ -47,10 +47,15 @@ dp <- summarize(data, sum(Emissions))
 names(dp) <- c("Year","Type","Emissions")
 
 png(file="plot3.png", height=480, width=480)
-qplot(Year, Emissions, data=dp, color=Type) + 
+print(qplot(Year, Emissions, data=dp, color=Type) + 
   facet_grid(.~Type) + 
   facet_wrap( ~Type, ncol=2) +
   geom_line(aes(group=1)) +
-  geom_point(aes(group=1),size=2,shape=21,fill="white") +
-  theme(legend.position="none")
+  geom_point(aes(group=1),size=2,shape=19) +
+  theme(legend.position="none") +
+  ggtitle("PM2.5 Emissions by Type - Baltimore City") +
+  labs(title = "PM2.5 Emissions by Type in Baltimore City, MD",
+       x = "Years",
+       y = "PM2.5 Emissions (in Tons)")
+)
 dev.off()
