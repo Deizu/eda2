@@ -78,7 +78,7 @@ summary <- summarize(complete,emissions=sum(Emissions))
 # Clean up the column names
 names(summary) <- c("Year","Emissions")
 
-# Plot it with ggplot2
+# Plot it using the ggplot2 package
 png(file="plot4.png", height=600, width=600)
   print(
     qplot(summary$Year, summary$Emissions) +
