@@ -1,11 +1,9 @@
 # Plot 1
 
 # Load required libraries
-
 require(dplyr)
 
 # Check for data and download it if needed
-
 if(!file.exists("./data")) {dir.create("./data")}
 if(!file.exists("./data/summarySCC_PM25.rds")
    | !file.exists("./data/Source_Classification_Code.rds")) {
@@ -22,7 +20,6 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 }
 
 # Read data into environment
-
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
