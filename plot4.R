@@ -2,6 +2,10 @@
 
 # Load required libraries
 
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+
 # Check for data and download it if needed
 
 if(!file.exists("./data")) {dir.create("./data")}
@@ -29,18 +33,48 @@ SCC <- readRDS("./data/Source_Classification_Code.rds")
 # sources changed from 1999–2008?
 ###############################################################################
 
-coalindex <- grep("coal|Coal",SCC$Short.Name)
-coalrelated <- SCC[coalindex,]
-coalindex <- as.vector(unique(coalrelated$SCC))
-coalindex <- NEI$SCC %in% coalindex
-coaldata <- NEI[coalindex,]
-coalcomplete <- left_join(coaldata,coalrelated,by=c("SCC" = "SCC"))
-coalcomplete <- tbl_df(coalcomplete)
-coalcomplete <- group_by(coalcomplete,year)
-coalsum <- summarize(coalcomplete,emissions=sum(Emissions))
-names(coalsum) <- c("Year","Emissions")
+# Reduce SCC dimensions to code identifier and sector description
+scc <- SCC[,c("SCC","EI.Sector")]
+
+# Get rid of extraneous data to keep the environment clutter free
+rm(SCC)
+
+# Create a vector of matches for combustion-related sector descriptions
+filteredcomb <- grep("Comb|comb",scc$EI.Sector)
+
+# Create a vector of matches for coal-related sector descriptions
+filteredcoal <- grep("Coal|coal",scc$EI.Sector)
+
+# Check the 2 vectors against one another
+filter <- filteredcoal %in% filteredcomb
+
+# Create a vector of common values
+common <- filteredcoal[filter]
+
+# Limit data frame to only coal and combustion related sector descriptions
+codes <- scc[common,]
+
+# Drop row names from resultant set
+row.names(codes) <- NULL
+
+# Limit the data emissions data frame to rows matching the code list
+nei <- NEI[(NEI$SCC %in% codes$SCC),]
+
+# Join the data emissions data to the matching codes from the list
+complete <- left_join(nei,codes,by=c("SCC" = "SCC"))
+
+# Transform the dataframe into a tbl via tidyr package for further cleanup
+complete <- tbl_df(complete)
+complete <- group_by(complete,year)
+summary <- summarize(complete,emissions=sum(Emissions))
+names(summary) <- c("Year","Emissions")
 
 png(file="plot4.png", height=480, width=480)
-plot(coalsum$Year, coalsum$Emissions, xlab="Year", ylab="Total Emissions (Tons)",
-     main="PM2.5 Emissions from Coal Combustion Related Sources", typ="b")
+  print(
+    qplot(summary$Year, summary$Emissions) +
+      geom_line() +
+      labs(title="Coal Combustion Related PM2.5 Emissions in the US", 
+           x="Years", 
+           y="PM2.5 Emissions (in Tons)")
+      )
 dev.off()
