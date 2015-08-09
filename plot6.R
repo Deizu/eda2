@@ -1,9 +1,10 @@
 # Plot 6
 
 # Load required libraries
+require(dplyr)
+require(ggplot2)
 
 # Check for data and download it if needed
-
 if(!file.exists("./data")) {dir.create("./data")}
 if(!file.exists("./data/summarySCC_PM25.rds")
    | !file.exists("./data/Source_Classification_Code.rds")) {
@@ -20,7 +21,6 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 }
 
 # Read data into environment
-
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
@@ -41,6 +41,8 @@ scc <- SCC[,c("SCC","EI.Sector")]
 rm(SCC)
 
 # Generate a vector of codes with sector descriptions related to vehicles
+# NOTE: This filter allows for capture of the word "vehicles" regardless of
+# capitalization.
 vehicles <- grep("vehicles|Vehicles",scc$EI.Sector)
 
 # Subset the codes list by the vehicle vector above
@@ -53,10 +55,9 @@ row.names(codes) <- NULL
 totc <- taleoftwocities[(taleoftwocities$SCC %in% codes$SCC),]
 
 # Join the data emissions data to the matching codes from the list
-## NOTE: THIS TAKES A LONG TIME ON THIS DATA! BE PATIENT!
 complete <- left_join(totc,codes,by=c("SCC" = "SCC"))
 
-# Transform the dataframe into a tbl via tidyr package for further cleanup
+# Transform the dataframe into a tbl via dplyr package for further cleanup
 complete <- tbl_df(complete)
 
 # Group the data by year for easier summarization
@@ -72,7 +73,7 @@ names(summary) <- c("Locale","Year","Emissions")
 summary$Locale <- gsub("06037","Los Angeles County, CA",summary$Locale)
 summary$Locale <- gsub("24510","Baltimore City, MD",summary$Locale)
 
-# Plot it with ggplot2, include smoothed conditional mean
+# Plot it using the ggplot2 package, include smoothed conditional mean
 png(file="plot6.png", height=600, width=600)
 print(
   qplot(Year, Emissions, data=summary, color=Locale) +
