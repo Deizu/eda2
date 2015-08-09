@@ -1,13 +1,10 @@
 # Plot 4
 
 # Load required libraries
-
 require(dplyr)
-require(tidyr)
 require(ggplot2)
 
 # Check for data and download it if needed
-
 if(!file.exists("./data")) {dir.create("./data")}
 if(!file.exists("./data/summarySCC_PM25.rds")
    | !file.exists("./data/Source_Classification_Code.rds")) {
@@ -24,7 +21,6 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 }
 
 # Read data into environment
-
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
@@ -40,18 +36,25 @@ scc <- SCC[,c("SCC","EI.Sector")]
 rm(SCC)
 
 # Create a vector of matches for combustion-related sector descriptions
+# NOTE: This regex checks for "Comb" or "comb", and allows for both the
+# abbreviation and full word for "combustion" to be captured regardless of
+# capitalization. 
+#This is part one of a two-part filter!
 filteredcomb <- grep("Comb|comb",scc$EI.Sector)
 
 # Create a vector of matches for coal-related sector descriptions
+# NOTE: This regex checks for "Coal" or "coal", and allows for full word 
+# to be captured regardless of capitalization.
+# This is part two of a two-part filter!
 filteredcoal <- grep("Coal|coal",scc$EI.Sector)
 
-# Check the 2 vectors against one another
+# Check the 2 filter vectors against one another
 filter <- filteredcoal %in% filteredcomb
 
 # Create a vector of common values
 common <- filteredcoal[filter]
 
-# Limit data frame to only coal and combustion related sector descriptions
+# Limit data frame to only the rows which match the filtered sector descriptions
 codes <- scc[common,]
 
 # Drop row names from resultant set
@@ -63,7 +66,7 @@ nei <- NEI[(NEI$SCC %in% codes$SCC),]
 # Join the data emissions data to the matching codes from the list
 complete <- left_join(nei,codes,by=c("SCC" = "SCC"))
 
-# Transform the dataframe into a tbl via tidyr package for further cleanup
+# Transform the dataframe into a tbl via dplyr package for further cleanup
 complete <- tbl_df(complete)
 
 # Group the data by year for easier summarization
