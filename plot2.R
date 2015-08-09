@@ -2,7 +2,7 @@
 
 # Load required libraries
 
-library(dplyr)
+require(dplyr)
 
 # Check for data and download it if needed
 
