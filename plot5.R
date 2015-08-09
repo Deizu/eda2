@@ -1,13 +1,10 @@
 # Plot 5
 
 # Load required libraries
-
 require(dplyr)
-require(tidyr)
 require(ggplot2)
 
 # Check for data and download it if needed
-
 if(!file.exists("./data")) {dir.create("./data")}
 if(!file.exists("./data/summarySCC_PM25.rds")
    | !file.exists("./data/Source_Classification_Code.rds")) {
@@ -24,7 +21,6 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 }
 
 # Read data into environment
-
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
@@ -43,6 +39,8 @@ scc <- SCC[,c("SCC","EI.Sector")]
 rm(SCC)
 
 # Generate a vector of codes with sector descriptions related to vehicles
+# NOTE: This filter allows for capture of the word "vehicles" regardless of
+# capitalization.
 vehicles <- grep("vehicles|Vehicles",scc$EI.Sector)
 
 # Subset the codes list by the vehicle vector above
@@ -55,10 +53,9 @@ row.names(codes) <- NULL
 nei <- bc[(bc$SCC %in% codes$SCC),]
 
 # Join the data emissions data to the matching codes from the list
-## NOTE: THIS TAKES A LONG TIME ON THIS DATA! BE PATIENT!
 complete <- left_join(nei,codes,by=c("SCC" = "SCC"))
 
-# Transform the dataframe into a tbl via tidyr package for further cleanup
+# Transform the dataframe into a tbl via dplyr package for further cleanup
 complete <- tbl_df(complete)
 
 # Group the data by year for easier summarization
@@ -70,7 +67,7 @@ summary <- summarize(complete,emissions=sum(Emissions))
 # Clean up the column names
 names(summary) <- c("Year","Emissions")
 
-# Plot it with ggplot2
+# Plot it using the ggplot2 package
 png(file="plot5.png", height=600, width=600)
 print(
   qplot(summary$Year, summary$Emissions) +
