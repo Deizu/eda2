@@ -46,8 +46,9 @@ data <- group_by(data,year,type)
 dp <- summarize(data, sum(Emissions))
 names(dp) <- c("Year","Type","Emissions")
 
-png(file="plot3.png", height=480, width=480)
-print(qplot(Year, Emissions, data=dp, color=Type) + 
+png(file="plot3.png", height=600, width=600)
+print(
+  qplot(Year, Emissions, data=dp, color=Type) + 
   facet_grid(.~Type) + 
   facet_wrap( ~Type, ncol=2) +
   geom_line(aes(group=1)) +

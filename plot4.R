@@ -65,11 +65,18 @@ complete <- left_join(nei,codes,by=c("SCC" = "SCC"))
 
 # Transform the dataframe into a tbl via tidyr package for further cleanup
 complete <- tbl_df(complete)
+
+# Group the data by year for easier summarization
 complete <- group_by(complete,year)
+
+# Summarize the data by calculating a sum for each year
 summary <- summarize(complete,emissions=sum(Emissions))
+
+# Clean up the column names
 names(summary) <- c("Year","Emissions")
 
-png(file="plot4.png", height=480, width=480)
+# Plot it with ggplot2
+png(file="plot4.png", height=600, width=600)
   print(
     qplot(summary$Year, summary$Emissions) +
       geom_line() +

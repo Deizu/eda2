@@ -38,7 +38,7 @@ data <- tbl_df(bc)
 data <- group_by(data,year)
 dp <- summarize(data, sum(Emissions))
 names(dp) <- c("Year","Total")
-png(file="plot2.png", height=480, width=480)
+png(file="plot2.png", height=600, width=600)
 plot(dp$Year, dp$Total, typ="b", xlab="Year", ylab="Total Emissions (Tons)",
      main="PM2.5 Emissions in Baltimore City, MD")
 dev.off()

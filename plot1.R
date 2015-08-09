@@ -40,7 +40,7 @@ data <- tbl_df(NEI)
 data <- group_by(data,year)
 dp <- summarize(data, sum(Emissions))
 names(dp) <- c("Year","Total")
-png(file="plot1.png", height=480, width=480)
+png(file="plot1.png", height=600, width=600)
 plot(dp$Year, dp$Total, typ="b", xlab="Year", ylab="Total Emissions (Tons)",
      main="PM2.5 Emissions in the US")
 dev.off()
