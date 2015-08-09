@@ -26,10 +26,6 @@ if(!file.exists("./data/summarySCC_PM25.rds")
 NEI <- readRDS("./data/summarySCC_PM25.rds")
 SCC <- readRDS("./data/Source_Classification_Code.rds")
 
-# NEI$Pollutant <- as.factor(NEI$Pollutant)
-# NEI$year <- as.factor(NEI$year)
-# NEI$type <- as.factor(NEI$type)
-
 ############################################################################### 
 # Have total emissions from PM2.5 decreased in the United States from 1999 to
 # 2008? Using the base plotting system, make a plot showing the total PM2.5

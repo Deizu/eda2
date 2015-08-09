@@ -79,7 +79,7 @@ print(
     geom_line() +
     labs(title="Motor Vehicle Related PM2.5 Emissions - Baltimore vs LA", 
          x="Years", 
-         y="PM2.5 Emissions (in Tons)") +
+         y="PM2.5 Emissions (Tons)") +
     theme(legend.position="top") +
     geom_smooth(method=lm,fill="light grey",linetype="dotted")
 )

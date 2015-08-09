@@ -82,6 +82,6 @@ png(file="plot4.png", height=600, width=600)
       geom_line() +
       labs(title="Coal Combustion Related PM2.5 Emissions in the US", 
            x="Years", 
-           y="PM2.5 Emissions (in Tons)")
+           y="PM2.5 Emissions (Tons)")
       )
 dev.off()

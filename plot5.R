@@ -77,6 +77,6 @@ print(
     geom_line() +
     labs(title="Motor Vehicle Related PM2.5 Emissions in Baltimore City, MD", 
          x="Years", 
-         y="PM2.5 Emissions (in Tons)")
+         y="PM2.5 Emissions (Tons)")
 )
 dev.off()
